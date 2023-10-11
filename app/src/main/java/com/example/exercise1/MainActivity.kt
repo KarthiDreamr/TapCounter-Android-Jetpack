@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting()
+                    Dashboard()
                 }
             }
         }
@@ -40,10 +40,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(){
+fun Dashboard(){
     var tapCount by rememberSaveable { mutableStateOf(0) }
     val context = LocalContext.current
-
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -54,7 +53,7 @@ fun Greeting(){
         Button(
             onClick = {
                 tapCount++
-                Toast.makeText(context, "Button Tapped $tapCount times ! ", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Button Tapped $tapCount times !", Toast.LENGTH_SHORT).show()
             }
         ) {
             Text("Button")
@@ -62,11 +61,10 @@ fun Greeting(){
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     Exercise1Theme {
-        Greeting()
+        Dashboard()
     }
 }
