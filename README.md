@@ -4,9 +4,10 @@ Welcome to the repository for the TapCounter **Android** application built using
 
 ## Features 🎯
 
-- Simple and intuitive UI
-- Built with Jetpack Compose
-- Demonstrates the use of state in Compose
+- The application is built using **Jetpack Compose**, Android's modern toolkit for building native UI.
+- It uses a `Button` composable that increments a counter each time it is tapped.
+- The counter value is displayed on the screen and updated in real-time.
+- A toast message is displayed with the updated count each time the button is tapped.
 
 ## Screenshots 📸
 
