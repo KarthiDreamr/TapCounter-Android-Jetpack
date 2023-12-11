@@ -1,18 +1,16 @@
-# TapCounter-Android-Jetpack
+# TapCounter 🎉📱
 
-TapCounter is a simple Android app that counts the number of taps on the screen. It uses Jetpack Compose, the modern toolkit for building native UIs, and Jetpack DataStore, the replacement for SharedPreferences. :sparkles:
+Welcome to the repository for the TapCounter **Android** application built using **Jetpack Compose!** This app is a simple tap counter that increases the count each time you tap the button. It's a fun and interactive way to explore the capabilities of Jetpack Compose. 😄🚀
 
-## Features
+## Features 🎯
 
-- Tap anywhere on the screen to increment the counter :+1:
-- Long press to reset the counter to zero :zero:
-- The counter value is persisted across app restarts using DataStore :floppy_disk:
-- The app supports light and dark themes :sunny: :new_moon:
+- Simple and intuitive UI
+- Built with Jetpack Compose
+- Demonstrates the use of state in Compose
 
-## Screenshots
+## Screenshots 📸
 
-![Light theme]
-![Dark theme]
+*Coming soon...*
 
 ## How to run
 
@@ -20,6 +18,6 @@ TapCounter is a simple Android app that counts the number of taps on the screen.
 - Open the project in Android Studio Arctic Fox or later
 - Run the app on an emulator or a physical device
 
-## License
+## License 📝
 
 This project is licensed under the GNU General Public License (GPL-3.0). The GPL is a strong copyleft license that requires improvements to be shared back with the community. For more information, see the [LICENSE](LICENSE) file.
