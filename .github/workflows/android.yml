@@ -1,10 +1,6 @@
 name: Auto Release # The name of the workflow
 
-on: # The trigger for the workflow
-  push: # The workflow runs when a new commit is pushed to the main branch
-    branches: [ main ]
-#  pull_request: # The workflow also runs when a pull request is opened or updated
-#    branches: [ main ]
+on: [push]
 
 jobs: # The list of jobs for the workflow
   build: # The name of the first job
