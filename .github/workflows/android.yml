@@ -13,7 +13,7 @@ jobs: # The list of jobs for the workflow
         uses: actions/setup-java@v3 # A predefined action that sets up the Java environment
         with: # The inputs for the action
           java-version: '17' # The version of Java to use
-#          distribution: 'temurin' # The distribution of Java to use
+          distribution: 'temurin' # The distribution of Java to use
           cache: gradle # The option to cache the Gradle dependencies
       - name: Grant execute permission for gradlew # A custom name for the step
         run: chmod +x gradlew # A shell command to run
