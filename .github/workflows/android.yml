@@ -1,21 +1,18 @@
 name: Auto Release # The name of the workflow
 
-on:
-  pull_request:
-    branches: [ main ]
-    types: [ closed ]
-jobs:
-  build:
-    if: $ { { github.event.pull_request.merged }}
+on: [push]
+
+jobs: # The list of jobs for the workflow
+  build: # The name of the first job
 
     runs-on: ubuntu-latest # The type of runner to use for the job
 
     steps: # The list of steps for the job
       - uses: actions/checkout@v3 # A predefined action that checks out the repository
-      - name: set up JDK 11 # A custom name for the step
+      - name: set up JDK 17 # A custom name for the step
         uses: actions/setup-java@v3 # A predefined action that sets up the Java environment
         with: # The inputs for the action
-          java-version: '11' # The version of Java to use
+          java-version: '17' # The version of Java to use
           distribution: 'temurin' # The distribution of Java to use
           cache: gradle # The option to cache the Gradle dependencies
       - name: Grant execute permission for gradlew # A custom name for the step
@@ -33,7 +30,7 @@ jobs:
             - First Change
             - Second Change
         env: # The environment variables for the action
-          GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }} # The GitHub token to authenticate the action
+          GITHUB_TOKEN: $ { { secrets.TAPCOUNTER_SECRETKEY }} # The GitHub token to authenticate the action
       - name: Upload APK to release # A custom name for the step
         uses: actions/upload-release-asset@v1 # A predefined action that uploads a file to the release
         with: # The inputs for the action
@@ -42,7 +39,10 @@ jobs:
           asset_name: app-release.apk # The name of the file to upload
           asset_content_type: application/vnd.android.package-archive # The content type of the file to upload
         env: # The environment variables for the action
-          GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }} # The GitHub token to authenticate the action
+          GITHUB_TOKEN: $ { { secrets.TAPCOUNTER_SECRETKEY }} # The GitHub token to authenticate the action
+
+
+
 #      - name: Notify Slack # A custom name for the step
 #        uses: actions/notify-slack@v1 # A predefined action that sends a message to Slack
 #        with: # The inputs for the action
@@ -50,3 +50,4 @@ jobs:
 #          channel: '#general' # The Slack channel to send the message to
 #          message: 'A new release of Tap Counter is available at $ { { steps.create_release.outputs.html_url }}' # The message to send
 #          icon: ':rocket:' # The icon to use for the message
+
