@@ -50,3 +50,4 @@ jobs:
 #          channel: '#general' # The Slack channel to send the message to
 #          message: 'A new release of Tap Counter is available at $ { { steps.create_release.outputs.html_url }}' # The message to send
 #          icon: ':rocket:' # The icon to use for the message
+

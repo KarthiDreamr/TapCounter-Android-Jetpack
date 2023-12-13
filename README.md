@@ -11,7 +11,7 @@ Welcome to the repository for the TapCounter **Android** application built using
 
 ## Screenshots 📸
 
-*Coming soon... *
+* Coming soon... *
 
 ## How to run
 
