@@ -1,10 +1,10 @@
-name: Android CI # The name of the workflow
+name: Auto Release # The name of the workflow
 
 on: # The trigger for the workflow
   push: # The workflow runs when a new commit is pushed to the main branch
     branches: [ main ]
-  pull_request: # The workflow also runs when a pull request is opened or updated
-    branches: [ main ]
+#  pull_request: # The workflow also runs when a pull request is opened or updated
+#    branches: [ main ]
 
 jobs: # The list of jobs for the workflow
   build: # The name of the first job
@@ -23,10 +23,31 @@ jobs: # The list of jobs for the workflow
         run: chmod +x gradlew # A shell command to run
       - name: Build with Gradle # A custom name for the step
         run: ./gradlew build # A shell command to run
-      - name: Release APK # A custom name for the step
-        uses: r0user/release-apk@main # A predefined action that releases the APK
+      - name: Create release tag # A custom name for the step
+        id: create_release # An identifier for the step
+        uses: actions/create-release@v1 # A predefined action that creates a release tag
         with: # The inputs for the action
-          releaseTitle: 'Tap Counter' # The title of the release
-          appFolder: 'app' # The folder where the app is located
+          tag_name: $ { { github.ref }} # The name of the tag
+          release_name: Release $ { { github.ref }} # The name of the release
+          body: | # The body of the release
+            Changes in this Release
+            - First Change
+            - Second Change
         env: # The environment variables for the action
-          GITHUB_TOKEN: $ {{ GITHUB.TOKEN }} # The GitHub token to authenticate the action
+          GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }} # The GitHub token to authenticate the action
+      - name: Upload APK to release # A custom name for the step
+        uses: actions/upload-release-asset@v1 # A predefined action that uploads a file to the release
+        with: # The inputs for the action
+          upload_url: $ { { steps.create_release.outputs.upload_url }} # The URL of the release
+          asset_path: ./app/build/outputs/apk/release/app-release.apk # The path of the file to upload
+          asset_name: app-release.apk # The name of the file to upload
+          asset_content_type: application/vnd.android.package-archive # The content type of the file to upload
+        env: # The environment variables for the action
+          GITHUB_TOKEN: $ { { secrets.GITHUB_TOKEN }} # The GitHub token to authenticate the action
+      - name: Notify Slack # A custom name for the step
+        uses: actions/notify-slack@v1 # A predefined action that sends a message to Slack
+        with: # The inputs for the action
+          webhook-url: $ { { secrets.SLACK_WEBHOOK_URL }} # The Slack webhook URL
+          channel: '#general' # The Slack channel to send the message to
+          message: 'A new release of Tap Counter is available at $ { { steps.create_release.outputs.html_url }}' # The message to send
+          icon: ':rocket:' # The icon to use for the message
