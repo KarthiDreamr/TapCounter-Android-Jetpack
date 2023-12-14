@@ -46,7 +46,7 @@ jobs: # The list of jobs for the workflow
             - First Change
             - Second Change
         env: # The environment variables for the action
-          GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
+          GITHUB_TOKEN: ${{ secrets.PAT }} # The GitHub token to authenticate the action
 
       - name: Upload APK to release # A custom name for the step
         uses: actions/upload-release-asset@v1.0.2 # A predefined action that uploads a file to the release
@@ -56,7 +56,7 @@ jobs: # The list of jobs for the workflow
           asset_name: app-release.apk # The name of the file to upload
           asset_content_type: application/vnd.android.package-archive # The content type of the file to upload
         env: # The environment variables for the action
-          GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
+          GITHUB_TOKEN: ${{ secrets.PAT }} # The GitHub token to authenticate the action
 
 
   # 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
