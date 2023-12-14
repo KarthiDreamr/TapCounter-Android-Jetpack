@@ -66,6 +66,8 @@ jobs:
       #4      
       - name: Create Github Release
         uses: actions/create-release@v1.1.4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           generate_release_notes: true
           prerelease: true
