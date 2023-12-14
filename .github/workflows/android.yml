@@ -61,9 +61,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: release-artifacts
-          paths: |
-            app/build/outputs/apk/release/
-            app/build/outputs/bundle/release/
+          path: app/build/outputs/apk/release/
+            # app/build/outputs/bundle/release/
       #4      
       - name: Create Github Release
         uses: actions/create-release@v1.1.4
@@ -72,5 +71,5 @@ jobs:
           prerelease: true
           files: |
             app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
+            # app/build/outputs/bundle/release/app-release.aab
 
