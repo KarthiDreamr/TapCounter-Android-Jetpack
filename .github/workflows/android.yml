@@ -71,7 +71,7 @@ jobs:
         with:
           generate_release_notes: true
           prerelease: true
-          files: |
-            app/build/outputs/apk/release/app-release.apk
-            # app/build/outputs/bundle/release/app-release.aab
+          tag_name: ${{ github.ref }}
+          body: 'Description of the release'
+        
 
