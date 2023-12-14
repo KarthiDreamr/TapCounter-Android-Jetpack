@@ -1,26 +1,24 @@
-name: Git Actions
+name: Android Build and Release
 on:
   push:
     branches: master
-  #   tags:
-  #     - v*
-  # workflow_dispatch:
-  # schedule:
-  #   - cron: '0 0 * * *'
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # if: startsWith(github.ref, 'refs/tags/')
 
     steps:
-      - uses: actions/checkout@v2.6.0
+      - name: Checkout code
+        uses: actions/checkout@v2.6.0
+        with:
+          runs.using: node16
 
-      - name: Setup JAVA 17
+      - name: Setup Java
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
           java-version: 17
+          runs.using: node16
 
       - name: Cache Gradle and wrapper
         uses: actions/cache@v2
@@ -29,47 +27,32 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-    
-      # #1     
-      # - name: Decode Keystore
-      #   env:
-      #     ENCODED_STRING: ${{ secrets.SIGNING_KEY_STORE_BASE64 }}
-      #     SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
+          runs.using: node16
 
-      #   run: |
-      #     echo $ENCODED_STRING > keystore-b64.txt
-      #     base64 -d keystore-b64.txt > $SIGNING_KEY_STORE_PATH
-         
-      #2
-      - name: Build Release apk
-        # env:
-        #   SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-        #   SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        #   SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        #   SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+      - name: Build Release APK
         run: ./gradlew assembleRelease
- 
-      - name: Build Release bundle
-        # env:
-        #   SIGNING_KEY_STORE_PATH: ${{ secrets.SIGNING_KEY_STORE_PATH }}
-        #   SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
-        #   SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-        #   SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+      - name: Build Release Bundle
         run: ./gradlew bundleRelease
-      #3
-      - name: Upload Release Build to Artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: release-artifacts
-          path: app/build/outputs/apk/release/
-            # app/build/outputs/bundle/release/
-      #4      
-      - name: Create Github Release
+
+      - name: Create GitHub Release
+        id: create_release
         uses: actions/create-release@v1.1.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          runs.using: node16
         with:
           prerelease: true
-          # tag_name: ${{ github.sha }}
-          tag_name: 'v3.0.0'
+          tag_name: 'v2.2.2' # Replace with your versioning scheme
           body: 'Description of the release'
+
+      - name: Upload APK to release
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          runs.using: node16
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: app/build/outputs/apk/release/app-release.apk # The path to the asset you want to upload
+          asset_name: app-release.apk # The name of the asset you want to upload
+          asset_content_type: application/vnd.android.package-archive # The content type of the asset you want to upload
