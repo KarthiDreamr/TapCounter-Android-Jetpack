@@ -10,11 +10,11 @@ jobs: # The list of jobs for the workflow
     steps: # The list of steps for the job
       - uses: actions/checkout@v2.6.0 # A predefined action that checks out the repository
  
-      - name: Setup JAVA 11 # A custom name for the step
+      - name: Setup JAVA 17 # A custom name for the step
         uses: actions/setup-java@v3 # A predefined action that sets up the Java environment
         with: # The inputs for the action
           distribution: 'corretto' # The distribution of Java to use
-          java-version: 11 # The version of Java to use
+          java-version: 17 # The version of Java to use
  
       - name: Cache Gradle and wrapper # A custom name for the step
         uses: actions/cache@v2 # A predefined action that caches the Gradle dependencies
