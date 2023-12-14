@@ -27,23 +27,21 @@ jobs: # The list of jobs for the workflow
       - name: Build Release apk # A custom name for the step
         run: ./gradlew assembleRelease # A shell command to run
  
-      - name: Build Release bundle # A custom name for the step
-        run: ./gradlew bundleRelease # A shell command to run
+      # - name: Build Release bundle # A custom name for the step
+      #   run: ./gradlew bundleRelease # A shell command to run
       
       - name: Upload Release Build to Artifacts # A custom name for the step
         uses: actions/upload-artifact@v3 # A predefined action that uploads the build files to artifacts
         with: # The inputs for the action
           name: release-artifacts # The name of the artifact
-          path: | # The paths of the files to upload
-            app/build/outputs/apk/release/
+          path: app/build/outputs/apk/release/
           
       - name: Create Github Release # A custom name for the step
         uses: softprops/action-gh-release@v1 # A predefined action that creates a GitHub release
         with: # The inputs for the action
           generate_release_notes: true # The option to generate release notes
           prerelease: true # The option to mark the release as a prerelease
-          files: | # The files to include in the release
-            app/build/outputs/apk/release/app-release.apk
+          files: app/build/outputs/apk/release/app-release.apk
         env: # The environment variables for the action
           GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
 
