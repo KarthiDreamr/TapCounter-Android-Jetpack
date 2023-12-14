@@ -27,7 +27,7 @@ jobs:
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          runs.using: node16
+          # runs.using: node16
 
       - name: Build Release APK
         run: ./gradlew assembleRelease
@@ -43,7 +43,7 @@ jobs:
           runs.using: node16
         with:
           prerelease: true
-          tag_name: 'v2.2.2' # Replace with your versioning scheme
+          tag_name: 'v2.2.4' # Replace with your versioning scheme
           body: 'Description of the release'
 
       - name: Upload APK to release
