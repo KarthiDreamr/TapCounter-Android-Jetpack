@@ -8,48 +8,100 @@ jobs: # The list of jobs for the workflow
     runs-on: ubuntu-latest # The type of runner to use for the job
 
     steps: # The list of steps for the job
-      - uses: actions/checkout@v3 # A predefined action that checks out the repository
-      - name: set up JDK 17 # A custom name for the step
+      - uses: actions/checkout@v2.6.0 # A predefined action that checks out the repository
+ 
+      - name: Setup JAVA 11 # A custom name for the step
         uses: actions/setup-java@v3 # A predefined action that sets up the Java environment
         with: # The inputs for the action
-          java-version: '17' # The version of Java to use
-          distribution: 'temurin' # The distribution of Java to use
-          cache: gradle # The option to cache the Gradle dependencies
-      - name: Grant execute permission for gradlew # A custom name for the step
-        run: chmod +x gradlew # A shell command to run
-      - name: Build with Gradle # A custom name for the step
-        run: ./gradlew build # A shell command to run
-      - name: Create release tag # A custom name for the step
-        id: create_release # An identifier for the step
-        uses: actions/create-release@v1 # A predefined action that creates a release tag
+          distribution: 'corretto' # The distribution of Java to use
+          java-version: 11 # The version of Java to use
+ 
+      - name: Cache Gradle and wrapper # A custom name for the step
+        uses: actions/cache@v2 # A predefined action that caches the Gradle dependencies
         with: # The inputs for the action
-          tag_name: $ { { github.ref }} # The name of the tag
-          release_name: Release $ { { github.ref }} # The name of the release
-          body: | # The body of the release
-            Changes in this Release
-            - First Change
-            - Second Change
-        env: # The environment variables for the action
-          GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
-      - name: Upload APK to release # A custom name for the step
-        uses: actions/upload-release-asset@v1 # A predefined action that uploads a file to the release
+          path: | # The paths to cache
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }} # The key to identify the cache
+      
+      - name: Build Release apk # A custom name for the step
+        run: ./gradlew assembleRelease # A shell command to run
+ 
+      - name: Build Release bundle # A custom name for the step
+        run: ./gradlew bundleRelease # A shell command to run
+      
+      - name: Upload Release Build to Artifacts # A custom name for the step
+        uses: actions/upload-artifact@v3 # A predefined action that uploads the build files to artifacts
         with: # The inputs for the action
-          upload_url: $ { { steps.create_release.outputs.upload_url }} # The URL of the release
-          asset_path: ./app/build/outputs/apk/release/app-release.apk # The path of the file to upload
-          asset_name: app-release.apk # The name of the file to upload
-          asset_content_type: application/vnd.android.package-archive # The content type of the file to upload
+          name: release-artifacts # The name of the artifact
+          paths: | # The paths of the files to upload
+            app/build/outputs/apk/release/
+            app/build/outputs/bundle/release/
+          
+      - name: Create Github Release # A custom name for the step
+        uses: softprops/action-gh-release@v1 # A predefined action that creates a GitHub release
+        with: # The inputs for the action
+          generate_release_notes: true # The option to generate release notes
+          prerelease: true # The option to mark the release as a prerelease
+          files: | # The files to include in the release
+            app/build/outputs/apk/release/app-release.apk
+            app/build/outputs/bundle/release/app-release.aab
         env: # The environment variables for the action
-          GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
-
-  # 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
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The GitHub token to authenticate the action
 
 
-#
-#      - name: Notify Slack # A custom name for the step
-#        uses: actions/notify-slack@v1 # A predefined action that sends a message to Slack
-#        with: # The inputs for the action
-#          webhook-url: $ { { secrets.SLACK_WEBHOOK_URL }} # The Slack webhook URL
-#          channel: '#general' # The Slack channel to send the message to
-#          message: 'A new release of Tap Counter is available at $ { { steps.create_release.outputs.html_url }}' # The message to send
-#          icon: ':rocket:' # The icon to use for the message
+# name: Auto Release # The name of the workflow
+
+# on: [push]
+
+# jobs: # The list of jobs for the workflow
+#   build: # The name of the first job
+
+#     runs-on: ubuntu-latest # The type of runner to use for the job
+
+#     steps: # The list of steps for the job
+#       - uses: actions/checkout@v3 # A predefined action that checks out the repository
+#       - name: set up JDK 17 # A custom name for the step
+#         uses: actions/setup-java@v3 # A predefined action that sets up the Java environment
+#         with: # The inputs for the action
+#           java-version: '17' # The version of Java to use
+#           distribution: 'temurin' # The distribution of Java to use
+#           cache: gradle # The option to cache the Gradle dependencies
+#       - name: Grant execute permission for gradlew # A custom name for the step
+#         run: chmod +x gradlew # A shell command to run
+#       - name: Build with Gradle # A custom name for the step
+#         run: ./gradlew build # A shell command to run
+#       - name: Create release tag # A custom name for the step
+#         id: create_release # An identifier for the step
+#         uses: actions/create-release@v1 # A predefined action that creates a release tag
+#         with: # The inputs for the action
+#           tag_name: $ { { github.ref }} # The name of the tag
+#           release_name: Release $ { { github.ref }} # The name of the release
+#           body: | # The body of the release
+#             Changes in this Release
+#             - First Change
+#             - Second Change
+#         env: # The environment variables for the action
+#           GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
+#       - name: Upload APK to release # A custom name for the step
+#         uses: actions/upload-release-asset@v1 # A predefined action that uploads a file to the release
+#         with: # The inputs for the action
+#           upload_url: $ { { steps.create_release.outputs.upload_url }} # The URL of the release
+#           asset_path: ./app/build/outputs/apk/release/app-release.apk # The path of the file to upload
+#           asset_name: app-release.apk # The name of the file to upload
+#           asset_content_type: application/vnd.android.package-archive # The content type of the file to upload
+#         env: # The environment variables for the action
+#           GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
+
+#   # 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
+
+
+# #
+# #      - name: Notify Slack # A custom name for the step
+# #        uses: actions/notify-slack@v1 # A predefined action that sends a message to Slack
+# #        with: # The inputs for the action
+# #          webhook-url: $ { { secrets.SLACK_WEBHOOK_URL }} # The Slack webhook URL
+# #          channel: '#general' # The Slack channel to send the message to
+# #          message: 'A new release of Tap Counter is available at $ { { steps.create_release.outputs.html_url }}' # The message to send
+# #          icon: ':rocket:' # The icon to use for the message
 
