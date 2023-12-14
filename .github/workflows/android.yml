@@ -70,7 +70,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           prerelease: true
-          tag_name: ${{ github.sha }}
+          # tag_name: ${{ github.sha }}
+          tag_name: v3.0.0
           body: 'Description of the release'
         
 
