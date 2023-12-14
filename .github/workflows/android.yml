@@ -34,9 +34,8 @@ jobs: # The list of jobs for the workflow
         uses: actions/upload-artifact@v3 # A predefined action that uploads the build files to artifacts
         with: # The inputs for the action
           name: release-artifacts # The name of the artifact
-          paths: | # The paths of the files to upload
+          path: | # The paths of the files to upload
             app/build/outputs/apk/release/
-            app/build/outputs/bundle/release/
           
       - name: Create Github Release # A custom name for the step
         uses: softprops/action-gh-release@v1 # A predefined action that creates a GitHub release
@@ -45,7 +44,6 @@ jobs: # The list of jobs for the workflow
           prerelease: true # The option to mark the release as a prerelease
           files: | # The files to include in the release
             app/build/outputs/apk/release/app-release.apk
-            app/build/outputs/bundle/release/app-release.aab
         env: # The environment variables for the action
           GITHUB_TOKEN: ${{ secrets.GIT }} # The GitHub token to authenticate the action
 
